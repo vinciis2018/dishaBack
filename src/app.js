@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import productRoutes from './routes/productRoutes.js';
 import retailerRoutes from './routes/retailerRoutes.js';
@@ -44,11 +45,12 @@ app.get('/api/v1', (req, res) => {
 });
 
 // Mount routers
-app.use('/api/v1/auth', userRoutes);
+app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/products', productRoutes);
 app.use('/api/v1/distributors', distributorRoutes);
 app.use('/api/v1/retailers', retailerRoutes);
 app.use('/api/v1/orders', orderRoutes);
+app.use('/api/v1/users', userRoutes)
 
 
 app.use("/", (req, res) => {

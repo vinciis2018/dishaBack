@@ -24,6 +24,7 @@ export const createDistributor = async (req, res, next) => {
       images,
       products,
       ordersRecieved,
+      owner,
     } = req.body;
 
     // Validate required fields
@@ -34,6 +35,14 @@ export const createDistributor = async (req, res, next) => {
       return next(new ErrorResponse(`Please provide ${missingFields.join(', ')}`, 400));
     }
 
+    if (!owner) {
+      return next(new ErrorResponse('Please provide owner', 400));
+    }
+    
+    const existingOwner = await Distributor.findOne({ ownerId: owner._id });
+    if (existingOwner) {
+      return next(new ErrorResponse('Owner already has a distributor', 400));
+    }
     // Create distributor
     const distributor = await Distributor.create({
       name,
@@ -47,6 +56,9 @@ export const createDistributor = async (req, res, next) => {
       images,
       products,
       ordersRecieved,
+      ownerId: owner._id,
+      ownerName: owner.username,
+      ownerEmail: owner.email,
     });
 
     res.status(201).json({
@@ -277,6 +289,7 @@ export const updateDistributor = async (req, res, next) => {
       images,
       products,
       ordersRecieved,
+      owner,
     } = req.body;
     // Build update object
     const updateFields = {};
@@ -293,6 +306,11 @@ export const updateDistributor = async (req, res, next) => {
     if (images) updateFields.images = images;
     if (products) updateFields.products = products;
     if (ordersRecieved) updateFields.ordersRecieved = ordersRecieved;
+    if (owner) {
+      updateFields.ownerId = owner._id;
+      updateFields.ownerName = owner.username;
+      updateFields.ownerEmail = owner.email;
+    };
     
     // Find and update campaign
     await Distributor.findOneAndUpdate(
