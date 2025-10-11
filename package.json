@@ -1,0 +1,46 @@
+{
+  "name": "node_server",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "NODE_ENV=production node src/server.js",
+    "dev": "NODE_ENV=development nodemon src/server.js",
+    "worker": "nodemon --max-old-space-size=4096 ./src/utils/workerUtils.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "devWorker": "concurrently \"NODE_ENV=development nodemon src/server.js\" \"NODE_ENV=development nodemon --max-old-space-size=4096 ./src/utils/workerUtils.js\""
+  },
+  "keywords": [
+    "express",
+    "mongodb",
+    "nodejs",
+    "rest-api"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.857.0",
+    "@aws-sdk/s3-request-presigner": "^3.857.0",
+    "aws-sdk": "^2.1692.0",
+    "axios": "^1.11.0",
+    "bcryptjs": "^2.4.3",
+    "bullmq": "^5.58.0",
+    "colors": "^1.4.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "helmet": "^7.1.0",
+    "ioredis": "^5.7.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.18.0",
+    "mongoose": "^7.5.0",
+    "morgan": "^1.10.1",
+    "multer": "^2.0.2",
+    "socket.io": "^4.8.1",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.0",
+    "nodemon": "^3.1.10"
+  },
+  "description": "Express.js API with MongoDB using ES6 modules"
+}

@@ -1,0 +1,17 @@
+{
+  "watch": [
+    "src/"
+  ],
+  "ext": "js,json",
+  "ignore": [
+    "src/public/",
+    "node_modules/"
+  ],
+  "execMap": {
+    "js": "node"
+  },
+  "env": {
+    "NODE_ENV": "development"
+  },
+  "verbose": true
+}
