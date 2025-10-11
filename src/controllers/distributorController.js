@@ -2,7 +2,7 @@ import ErrorResponse from '../utils/errorResponse.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import mongoose from 'mongoose';
-import Distributor from '../models/DistributorModel.js';
+import Distributor from '../models/distributorModel.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
