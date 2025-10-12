@@ -23,7 +23,7 @@ let serverInstance;
 connectMongoDB();
 // Create server instance
 const server = app.listen(PORT, () => {
-  console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`.info);
+  console.log(`Server running in ${process.env.NODE_ENV || "production"} mode on port ${PORT}`.info);
 });
 
 // Store the server instance for graceful shutdown

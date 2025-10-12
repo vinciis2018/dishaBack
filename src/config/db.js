@@ -13,7 +13,7 @@ const connectMongoDB = async () => {
     
     // Using the new connection string with retryWrites and appName
     const mongourl = process.env.MONGODB_URI || 
-      "mongodb+srv://vinciis2025:OJ1QnBMBA0iRro2p@oohditcluster.riu0n1i.mongodb.net/?retryWrites=true&w=majority&appName=oohditCluster";
+      "mongodb+srv://vinciis2025:OJ1QnBMBA0iRro2p@oohditcluster.riu0n1i.mongodb.net/disha?retryWrites=true&w=majority&appName=oohditCluster";
     
     console.log('🔗 Connecting to MongoDB Atlas...');
     
