@@ -17,6 +17,9 @@ export const createOrder = async (req, res, next) => {
       username,
       deliveryAddress,
       products,
+      retailerId,
+      retailerName,
+      retailerEmail,
     } = req.body;
 
     // Validate required fields
@@ -43,6 +46,9 @@ export const createOrder = async (req, res, next) => {
       paymentId: "",
       paymentMethod: "",
       paymentDetails: {},
+      retailerId,
+      retailerName,
+      retailerEmail,
     });
 
     res.status(201).json({
@@ -161,6 +167,112 @@ export const getAllOrders = async (req, res, next) => {
     next(err);
   }
 };
+
+
+// @desc    Get my orders
+// @route   GET /api/v1/orders
+// @access  Private
+export const getMyOrders = async (req, res, next) => {
+  try {
+    // Copy req.query
+    const reqQuery = { ...req.query };
+
+    // Fields to exclude
+    const removeFields = ['select', 'sort', 'page', 'limit', 'search'];
+    
+    // Extract search term if it exists
+    const searchTerm = reqQuery.search;
+    delete reqQuery.search;
+
+    // Loop over removeFields and delete them from reqQuery
+    removeFields.forEach(param => delete reqQuery[param]);
+
+    // Create query string
+    let queryStr = JSON.stringify(reqQuery);
+
+    // Create operators ($gt, $gte, etc)
+    queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
+
+    // Start building the query
+    let query = {};
+    // If search term exists, add $or condition to search in multiple fields
+    if (searchTerm) {
+      query = {
+        $or: [
+          { name: { $regex: searchTerm, $options: 'i' } },
+          { city: { $regex: searchTerm, $options: 'i' } },
+          { address: { $regex: searchTerm, $options: 'i' } },
+          { zipCode: { $regex: searchTerm, $options: 'i' } },
+          { 'products.name': { $regex: searchTerm, $options: 'i' } },
+        ]
+      };
+    }
+    
+    // Merge with other query parameters
+    query = { 
+      ...query,
+      ...JSON.parse(queryStr),
+      retailerId: reqQuery.userId
+    };
+    console.log(query)
+    
+    // Create the final query
+    let dbQuery = Order.find(query);
+    console.log(dbQuery);
+    // Select Fields
+    if (req.query.select) {
+      const fields = req.query.select.split(',').join(' ');
+      query = query.select(fields);
+    }
+
+    // Sort
+    if (req.query.sort) {
+      const sortBy = req.query.sort.split(',').join(' ');
+      dbQuery = dbQuery.sort(sortBy);
+    } else {
+      dbQuery = dbQuery.sort('-createdAt');
+    }
+
+    // Pagination
+    const page = parseInt(req.query.page, 100) || 1;
+    const limit = parseInt(req.query.limit, 100) || 100;
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+    const total = await Order.countDocuments(query);
+
+    dbQuery = dbQuery.skip(startIndex).limit(limit);
+
+    // Executing query
+    const orders = await dbQuery;
+
+    // Pagination result
+    const pagination = {};
+
+    if (endIndex < total) {
+      pagination.next = {
+        page: page + 1,
+        limit
+      };
+    }
+
+    if (startIndex > 0) {
+      pagination.prev = {
+        page: page - 1,
+        limit
+      };
+    }
+
+    res.status(200).json({
+      success: true,
+      count: orders.length,
+      pagination,
+      orders
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 
 
 // @desc    Get order details

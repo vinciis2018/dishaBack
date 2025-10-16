@@ -17,6 +17,10 @@ const productSchema = new mongoose.Schema({
   quantityPerUnit: { type: Number, default: 1 }, // ek dabbe me kitne patte
   unitQuantity: { type: Number, default: 10 }, // total ek bach me kitna
   unitCost: { type: Number, default: 0 }, // ek dabbe ka kitna cost
+  mrp: { type: Number, default: 0 },
+  ptr: { type: Number, default: 0 },
+  packSize: { type: Number, default: 0 },
+  description: { type: String, default: "" },
 }, {
   timestamps: true
 });

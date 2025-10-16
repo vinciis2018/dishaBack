@@ -6,6 +6,9 @@ const productSchema = new mongoose.Schema({
   quantity: { type: Number, default: 0 },
   availability: { type: Boolean, default: true },
   minOrderQuanity: { type: Number, default: 10 },
+  orderQuantity: { type: Number, default: 1 },
+  ptr: { type: Number, default: 0 },
+  mrp: { type: Number, default: 0 },
 });
 
 const orderSchema = new mongoose.Schema({
@@ -24,6 +27,9 @@ const orderSchema = new mongoose.Schema({
   paymentDetails: { type: Object, default: {} },
   deliveryAddress: {},
   notes: { type: String, default: "" },
+  retailerId: { type: String, default: "" },
+  retailerName: { type: String, default: "" },
+  retailerEmail: { type: String, default: "" },
 }, {
   timestamps: true
 });

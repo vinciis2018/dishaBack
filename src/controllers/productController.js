@@ -20,6 +20,10 @@ export const createProduct = async (req, res, next) => {
       unitQuantity,
       availability,
       minOrderQuantity,
+      mrp,
+      ptr,
+      packSize,
+      description,
     } = req.body;
 
     // Validate required fields
@@ -39,6 +43,10 @@ export const createProduct = async (req, res, next) => {
       unitQuantity,
       availability,
       minOrderQuantity,
+      mrp,
+      ptr,
+      packSize,
+      description
     });
 
     res.status(201).json({
@@ -263,6 +271,10 @@ export const updateProduct = async (req, res, next) => {
       unitQuantity,
       availability,
       minOrderQuantity,
+      mrp,
+      ptr,
+      packSize,
+      description
     } = req.body;
     // Build update object
     const updateFields = {};
@@ -275,6 +287,10 @@ export const updateProduct = async (req, res, next) => {
     if (unitQuantity) updateFields.unitQuantity = unitQuantity;
     if (availability) updateFields.availability = availability;
     if (minOrderQuantity) updateFields.minOrderQuantity = minOrderQuantity;
+    if (mrp) updateFields.mrp = mrp;
+    if (ptr) updateFields.ptr = ptr;
+    if (packSize) updateFields.packSize = packSize;
+    if (description) updateFields.description = description;
     
     // Find and update campaign
     await Product.findOneAndUpdate(
