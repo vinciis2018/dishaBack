@@ -22,8 +22,14 @@ export const createRetailer = async (req, res, next) => {
       country,
       zipCode,
       images,
-      products,
-      ordersPlaced,
+      ownerId, 
+      ownerName,
+      ownerEmail,
+      createdBy,
+      email,
+      phone,
+      pan,
+      gst,
     } = req.body;
 
     // Validate required fields
@@ -45,8 +51,14 @@ export const createRetailer = async (req, res, next) => {
       country,
       zipCode,
       images,
-      products,
-      ordersPlaced,
+      ownerId,
+      ownerName,
+      ownerEmail,
+      createdBy,
+      phone,
+      email,
+      gst,
+      pan
     });
 
     res.status(201).json({
@@ -136,9 +148,12 @@ export const getAllRetailers = async (req, res, next) => {
   try {
     // Copy req.query
     const reqQuery = { ...req.query };
-
+    
+    if (req.query.rte) {
+      reqQuery.createdBy = reqQuery.rte
+    }
     // Fields to exclude
-    const removeFields = ['select', 'sort', 'page', 'limit', 'search'];
+    const removeFields = ['select', 'sort', 'page', 'limit', 'search', 'rte'];
     
     // Extract search term if it exists
     const searchTerm = reqQuery.search;
@@ -170,8 +185,11 @@ export const getAllRetailers = async (req, res, next) => {
     }
     
     // Merge with other query parameters
-    query = { ...query, ...JSON.parse(queryStr) };
-    
+    query = {
+      ...query,
+      ...JSON.parse(queryStr),
+    };
+
     // Create the final query
     let dbQuery = Retailer.find(query);
 
@@ -275,8 +293,15 @@ export const updateRetailer = async (req, res, next) => {
       country,
       zipCode,
       images,
+      ownerId,
+      ownerName,
+      ownerEmail,
       products,
       ordersPlaced,
+      phone,
+      email,
+      gst,
+      pan
     } = req.body;
     // Build update object
     const updateFields = {};
@@ -293,7 +318,14 @@ export const updateRetailer = async (req, res, next) => {
     if (images) updateFields.images = images;
     if (products) updateFields.products = products;
     if (ordersPlaced) updateFields.ordersPlaced = ordersPlaced;
-    
+    if (ownerId) updateFields.ownerId = ownerId;
+    if (ownerName) updateFields.ownerName = ownerName;
+    if (ownerEmail) updateFields.ownerEmail = ownerEmail;
+    if (phone) updateFields.phone = phone;
+    if (email) updateFields.email = email;
+    if (gst) updateFields.gst = gst;
+    if (pan) updateFields.pan = pan;
+
     // Find and update campaign
     await Retailer.findOneAndUpdate(
       { _id: req.params.retailerId },

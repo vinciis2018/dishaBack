@@ -7,6 +7,8 @@ const productSchema = new mongoose.Schema({
   availability: { type: Boolean, default: true },
   minOrderQuanity: { type: Number, default: 10 },
   unitCost: { type: Number, default: 0 },
+  mrp: { type: Number, default: 0 },
+  ptr: { type: Number, default: 0 },
 });
 
 const retailersSchema = new mongoose.Schema({
@@ -32,7 +34,8 @@ const retailersSchema = new mongoose.Schema({
   ownerName: { type: String, required: true },
   ownerEmail: { type: String, required: true },
   products: { type: [productSchema], default: [] },
-  ordersPlaced: {},
+  ordersPlaced: { type: [], default: [] },
+  createdBy: { type: String, required: true },
 
 }, {
   timestamps: true

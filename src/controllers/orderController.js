@@ -51,6 +51,11 @@ export const createOrder = async (req, res, next) => {
       retailerEmail,
     });
 
+    // await Retailer.findOneAndUpdate(
+    //   { _id: retailerId },
+    //   { $push: { ordersPlaced: order._id } },
+    // );
+
     res.status(201).json({
       success: true,
       data: order
@@ -214,11 +219,9 @@ export const getMyOrders = async (req, res, next) => {
       ...JSON.parse(queryStr),
       retailerId: reqQuery.userId
     };
-    console.log(query)
     
     // Create the final query
     let dbQuery = Order.find(query);
-    console.log(dbQuery);
     // Select Fields
     if (req.query.select) {
       const fields = req.query.select.split(',').join(' ');
