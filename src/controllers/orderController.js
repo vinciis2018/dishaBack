@@ -3,6 +3,9 @@ import ErrorResponse from '../utils/errorResponse.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import mongoose from 'mongoose';
+import Retailer from '../models/retailerModel.js';
+import Distributor from '../models/distributorModel.js';
+import User from '../models/userModel.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -183,7 +186,7 @@ export const getMyOrders = async (req, res, next) => {
     const reqQuery = { ...req.query };
 
     // Fields to exclude
-    const removeFields = ['select', 'sort', 'page', 'limit', 'search'];
+    const removeFields = ['select', 'sort', 'page', 'limit', 'search', 'userId'];
     
     // Extract search term if it exists
     const searchTerm = reqQuery.search;
@@ -217,9 +220,25 @@ export const getMyOrders = async (req, res, next) => {
     query = { 
       ...query,
       ...JSON.parse(queryStr),
-      retailerId: reqQuery.userId
     };
     
+    const user = await User.findById(req.query.userId);
+
+    if (user.role == "rte") {
+      const retailers = await Retailer.find({ createdBy: req.query.userId.toString() });
+      query = { ...query, retailerId: { $in: retailers.map(retailer => retailer._id.toString()) } };
+    }
+    
+    if (user.role == "retailer") {
+      const retailer = await Retailer.findOne({ ownerId: req.query.userId.toString() });
+      query = { ...query, retailerId: retailer._id.toString() };
+    }
+
+    if (user.role == "distributor") {
+      const distributer = await Distributor.findOne({ ownerId: req.query.userId.toString() });
+      query = { ...query, distributorId: distributer._id.toString() };
+    }
+
     // Create the final query
     let dbQuery = Order.find(query);
     // Select Fields
@@ -324,7 +343,12 @@ export const updateOrder = async (req, res, next) => {
       zipCode,
       images,
       products,
-      ordersPlaced,
+      distributorId, 
+      distributorName, 
+      distributorEmail, 
+      retailerId, 
+      retailerName, 
+      retailerEmail, 
     } = req.body;
     // Build update object
     const updateFields = {};
@@ -340,8 +364,13 @@ export const updateOrder = async (req, res, next) => {
     if (zipCode) updateFields.zipCode = zipCode;
     if (images) updateFields.images = images;
     if (products) updateFields.products = products;
-    if (ordersPlaced) updateFields.ordersPlaced = ordersPlaced;
-    
+    if (distributorId) updateFields.distributorId = distributorId;
+    if (distributorName) updateFields.distributorName = distributorName;
+    if (distributorEmail) updateFields.distributorEmail = distributorEmail;
+    if (retailerId) updateFields.retailerId = retailerId;
+    if (retailerName) updateFields.retailerName = retailerName;
+    if (retailerEmail) updateFields.retailerEmail = retailerEmail;  
+
     // Find and update campaign
     await Order.findOneAndUpdate(
       { _id: req.params.orderId },

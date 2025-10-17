@@ -14,6 +14,10 @@ export const createDistributor = async (req, res, next) => {
   try {
     const {
       name,
+      email,
+      phone,
+      gst,
+      pan,
       address,
       latitude,
       longitude,
@@ -24,7 +28,9 @@ export const createDistributor = async (req, res, next) => {
       images,
       products,
       ordersRecieved,
-      owner,
+      ownerId,
+      ownerName,
+      ownerEmail
     } = req.body;
 
     // Validate required fields
@@ -35,17 +41,21 @@ export const createDistributor = async (req, res, next) => {
       return next(new ErrorResponse(`Please provide ${missingFields.join(', ')}`, 400));
     }
 
-    if (!owner) {
+    if (!ownerId) {
       return next(new ErrorResponse('Please provide owner', 400));
     }
     
-    const existingOwner = await Distributor.findOne({ ownerId: owner._id });
+    const existingOwner = await Distributor.findOne({ ownerId: ownerId });
     if (existingOwner) {
       return next(new ErrorResponse('Owner already has a distributor', 400));
     }
     // Create distributor
     const distributor = await Distributor.create({
       name,
+      email,
+      phone,
+      gst,
+      pan,
       address,
       latitude,
       longitude,
@@ -56,9 +66,9 @@ export const createDistributor = async (req, res, next) => {
       images,
       products,
       ordersRecieved,
-      ownerId: owner._id,
-      ownerName: owner.username,
-      ownerEmail: owner.email,
+      ownerId,
+      ownerName,
+      ownerEmail,
     });
 
     res.status(201).json({
@@ -279,6 +289,10 @@ export const updateDistributor = async (req, res, next) => {
     // Extract fields to update
     const {
       name,
+      email,
+      phone,
+      gst,
+      pan,
       address,
       latitude,
       longitude,
@@ -289,13 +303,19 @@ export const updateDistributor = async (req, res, next) => {
       images,
       products,
       ordersRecieved,
-      owner,
+      ownerId,
+      ownerName,
+      ownerEmail,
     } = req.body;
     // Build update object
     const updateFields = {};
     
     // Only update fields that are provided in the request
     if (name) updateFields.name = name;
+    if (email) updateFields.email = email;
+    if (phone) updateFields.phone = phone;
+    if (gst) updateFields.gst = gst;
+    if (pan) updateFields.pan = pan;
     if (address) updateFields.address = address;
     if (latitude) updateFields.latitude = latitude;
     if (longitude) updateFields.longitude = longitude;
@@ -306,11 +326,9 @@ export const updateDistributor = async (req, res, next) => {
     if (images) updateFields.images = images;
     if (products) updateFields.products = products;
     if (ordersRecieved) updateFields.ordersRecieved = ordersRecieved;
-    if (owner) {
-      updateFields.ownerId = owner._id;
-      updateFields.ownerName = owner.username;
-      updateFields.ownerEmail = owner.email;
-    };
+    if (ownerId) updateFields.ownerId = ownerId;
+    if (ownerName) updateFields.ownerName = ownerName;
+    if (ownerEmail) updateFields.ownerEmail = ownerEmail;
     
     // Find and update campaign
     await Distributor.findOneAndUpdate(

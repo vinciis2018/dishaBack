@@ -1,5 +1,5 @@
 import express from 'express';
-import { createRetailer, createMultipleRetailers, getAllRetailers, getRetailerDetails, updateRetailer } from '../controllers/retailerController.js';
+import { createRetailer, createMultipleRetailers, getAllRetailers, getRetailerDetails, getRetailerByOwnerId, updateRetailer } from '../controllers/retailerController.js';
 
 const router = express.Router();
 
@@ -13,6 +13,8 @@ router.post('/update/:retailerId', updateRetailer);
 router.get('/all', getAllRetailers);
 
 router.get('/:id', getRetailerDetails);
+router.get('/owner/:id', getRetailerByOwnerId);
+
 
 
 

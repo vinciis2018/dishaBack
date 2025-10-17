@@ -30,6 +30,9 @@ const orderSchema = new mongoose.Schema({
   retailerId: { type: String, default: "" },
   retailerName: { type: String, default: "" },
   retailerEmail: { type: String, default: "" },
+  distributorId: { type: String, default: "" },
+  distributorName: { type: String, default: "" },
+  distributorEmail: { type: String, default: "" },
 }, {
   timestamps: true
 });

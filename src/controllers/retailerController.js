@@ -269,6 +269,28 @@ export const getRetailerDetails = async (req, res, next) => {
 };
 
 
+
+// @desc    Get retailer details
+// @route   GET /api/v1/retailers/owner/:id
+// @access  Private
+export const getRetailerByOwnerId = async (req, res, next) => {
+  try {
+    const retailer = await Retailer.findOne({ ownerId: req.params.id });
+
+    if (!retailer) {
+      return next(new ErrorResponse(`Retailer not found with id of ${req.params.id}`, 404));
+    }
+
+    res.status(200).json({
+      success: true,
+      data: retailer
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+
 // @desc    Update retailer details
 // @route   PUT /api/v1/retailers/update/:siteId
 // @access  Private
